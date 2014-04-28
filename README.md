@@ -16,7 +16,7 @@ running `stack.sh`:
 git clone https://github.com/openstack-dev/devstack.git ~/devstack
 sudo mkdir -p /opt/stack && sudo chown $(whoami) /opt/stack
 git clone https://github.com/mlowery/git-push-devstack.git
-cd git-push-devstack/bin && gpd vm --start-repo https://github.com/openstack/horizon.git
+cd git-push-devstack/bin && ./gpd vm --start-repo https://github.com/openstack/horizon.git
 cd ~/devstack && ./stack.sh
 ```
 
