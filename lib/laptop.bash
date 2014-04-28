@@ -161,7 +161,7 @@ make_remote_name() {
     fi
     local auto_remote_name_prefix=${GPD_AUTO_REMOTE_NAME_PREFIX:-gpd-}
     local auto_remote_name_suffix=${GPD_AUTO_REMOTE_NAME_SUFFIX:-}
-    local auto_remote_name=$remote_prefix$short_host$remote_suffix
+    local auto_remote_name=$auto_remote_name_prefix$short_host$auto_remote_name_suffix
     #local remote_name=${9:-${auto_remote_name}}
     echo $auto_remote_name
 }

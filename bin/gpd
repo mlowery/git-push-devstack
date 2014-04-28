@@ -9,7 +9,7 @@ USAGE="Usage: $me vm [<options>]
    or: $me laptop [<options>]"
 
 forward=gpd-$1
-if [[ -x $forward ]]; then
+if [[ -x "$me_dir/$forward" ]]; then
     "$me_dir/$forward" "${@:2}"
 else
     printf "$USAGE\n"

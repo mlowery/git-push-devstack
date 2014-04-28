@@ -91,7 +91,7 @@ source "$me_dir/../lib/laptop.bash"
 [[ -z $host ]] && usage "ERROR: --host is required"
 
 remote_user=${user:-${GPD_REMOTE_USER:-$default_remote_user}}
-bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$user/gpdrepos}}
+bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$remote_user/gpdrepos}}
 remote_name=${remote_name:-$(make_remote_name $host)}
 
 go $project $git_work_dir $host $remote_user "$bare_repo_root_dir" "$remote_name"
