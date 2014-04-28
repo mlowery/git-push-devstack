@@ -102,7 +102,7 @@ done
 
 source "$me_dir/../lib/vm.bash"
 [[ -z $start_repo ]] && usage "ERROR: --start-repo is required"
-[[ -z $dest_repo_dir ]] && usage "ERROR: --dest-repo-dir is required"
+#[[ -z $dest_repo_dir ]] && usage "ERROR: --dest-repo-dir is required"
 #[[ -n $localrc_repo_var && -z $devstack_home_dir ]] && usage "ERROR: --devstack-home-dir is required when --localrc_repo_var present"
 
 bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-$default_bare_repo_root_dir}}
