@@ -1,0 +1,120 @@
+#!/bin/bash
+
+set -e
+
+me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# defaults
+default_start_branch=master
+default_bare_repo_root_dir=~/gpdrepos
+default_devstack_home_dir=~/devstack
+
+# approach borrowed from git-stash
+dashless=$(basename "$0" | sed -e 's/-/ /')
+USAGE="
+NAME
+    gpd vm - setup bare repo and hook on DevStack VM
+
+USAGE
+    $dashless --start-repo <start-repo>
+           [--dest-repo-dir <dest-repo-dir>]
+           [--devstack-home-dir <devstack-home-dir>]
+           [--localrc-repo-dir <localrc-repo-var>]
+           [--start-branch <start-branch>]
+           [--bare-repo-root-dir <bare-repo-root-dir>]
+           [--help]
+
+DESCRIPTION
+    Sets up bare repo in \$bare-repo-root-dir and installs post-receive hook to
+copy files on git push to \$dest-repo-dir. Affected processes are restarted
+during the hook.
+
+    The current user must have write access to the entire \$bare-repo-root-dir
+tree.
+
+    In order to push to the bare repo, you must setup key-based SSH login for
+the user running this script.
+
+DEFAULTS
+    --start-branch $default_start_branch
+    --bare-repo-root-dir \$GPD_BARE_REPO_ROOT_DIR or $default_bare_repo_root_dir
+    --devstack-home-dir \$GPD_DEVSTACK_HOME_DIR
+    --localrc-repo-dir <project>_REPO where project derived from --start-repo
+    --dest-repo-dir /opt/stack/<project> where project derived from --start-repo
+
+ENVIRONMENT VARIABLES
+    GPD_BARE_REPO_ROOT_DIR: Absolute path to dir in which to create all bare
+                            repos on DevStack VM
+    GPD_DEVSTACK_HOME_DIR: Absolute path to DevStack clone
+"
+
+usage() {
+    local extra=${1:-""}
+    if [[ -n "$extra" ]]; then
+        printf "$extra\n"
+    fi
+    printf "$USAGE\n"
+    exit 1
+}
+
+while [[ $# > 1 ]]; do
+key="$1"
+shift
+
+case $key in
+    --start-repo)
+    start_repo="$1"
+    shift
+    ;;
+    --start-branch)
+    start_branch="$1"
+    shift
+    ;;
+    --bare-repo-root-dir)
+    bare_repo_root_dir="$1"
+    shift
+    ;;
+    --dest-repo-dir)
+    dest_repo_dir=$1
+    shift
+    ;;
+    --devstack-home-dir)
+    devstack_home_dir=$1
+    shift
+    ;;
+    --localrc-repo-var)
+    localrc_repo_var=$1
+    shift
+    ;;
+    --skip-localrc)
+    skip_localrc=1
+    shift
+    ;;
+    --help)
+    usage
+    ;;
+    *)
+    usage "ERROR: Unknown option: $key"
+    ;;
+esac
+done
+
+
+source "$me_dir/../lib/vm.bash"
+[[ -z $start_repo ]] && usage "ERROR: --start-repo is required"
+[[ -z $dest_repo_dir ]] && usage "ERROR: --dest-repo-dir is required"
+#[[ -n $localrc_repo_var && -z $devstack_home_dir ]] && usage "ERROR: --devstack-home-dir is required when --localrc_repo_var present"
+
+bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-$default_bare_repo_root_dir}}
+start_branch=${start_branch:-${default_start_branch}}
+devstack_home_dir=${devstack_home_dir:-${default_devstack_home_dir}}
+skip_localrc=${skip_localrc:-0}
+localrc_repo_var=${localrc_repo_var:-$(localrc_var_from_repo_url $start_repo)}
+
+# TODO derive dest_repo_dir from project
+
+[[ -d $devstack_home_dir ]] || quiet_die "ERROR: \"$devstack_home_dir\" does not exist or is not a directory"
+
+[[ $skip_localrc == 1 ]] && localrc_repo_var=""
+
+setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var

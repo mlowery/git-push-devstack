@@ -1,0 +1,97 @@
+#!/bin/bash
+
+set -e
+
+me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# defaults
+default_remote_user=$(whoami)
+default_bare_repo_root_dir=/home/$default_remote_user/gpdrepos
+
+# approach borrowed from git-stash
+dashless=$(basename "$0" | sed -e 's/-/ /')
+USAGE="
+NAME
+    gpd laptop - setup git remote on local clone
+
+USAGE
+    $dashless --project <project>
+               --git-work-dir <git-work-dir>
+               --host <host>
+               [--remote-user <remote-user>]
+               [--bare-repo-root-dir <bare-repo-root-dir]
+               [--remote-name <remote-name>]
+               [--help]
+
+DEFAULTS
+    --remote-user $default_remote_user
+    --bare-repo-root-dir $default_bare_repo_root_dir
+    --remote-name gpd-<host>
+
+ENVIRONMENT VARIABLES
+    GPD_REMOTE_USER: User on DevStack VM to use with git (via ssh)
+    GPD_BARE_REPO_ROOT_DIR: Absolute path to dir containing all bare repos on
+                            DevStack VM
+    GPD_AUTO_REMOTE_NAME_PREFIX: When --remote_name not specified, add this
+                                 prefix to remote name derived from --host
+    GPD_AUTO_REMOTE_NAME_SUFFIX: When --remote_name not specified, add this
+                                 suffix to remote name derived from --host
+"
+
+usage() {
+    local extra=${1:-""}
+    if [[ -n "$extra" ]]; then
+        printf "$extra\n"
+    fi
+    printf "$USAGE\n"
+    exit 1
+}
+
+while [[ $# > 1 ]]; do
+key="$1"
+shift
+
+case $key in
+    -w|--git-work-dir)
+    git_work_dir="$1"
+    shift
+    ;;
+    -h|--host)
+    host="$1"
+    shift
+    ;;
+    -b|--bare-repo-root-dir)
+    bare_repo_root_dir="$1"
+    shift
+    ;;
+    -r|--remote_name)
+    remote_name=$1
+    shift
+    ;;
+    -u|--remote-user)
+    user=$1
+    shift
+    ;;
+    -p|--project)
+    project=$1
+    shift
+    ;;
+    -h|--help)
+    usage
+    ;;
+    *)
+    usage "ERROR: Unknown option: $key"
+    ;;
+esac
+done
+
+source "$me_dir/../lib/laptop.bash"
+[[ -z $project ]] && usage "ERROR: --project is required"
+[[ -z $git_work_dir ]] && usage "ERROR: --git-work-dir is required"
+[[ -z $host ]] && usage "ERROR: --host is required"
+
+remote_user=${user:-${GPD_REMOTE_USER:-$default_remote_user}}
+bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$user/gpdrepos}}
+remote_name=${remote_name:-$(make_remote_name $host)}
+
+go $project $git_work_dir $host $remote_user "$bare_repo_root_dir" "$remote_name"
