@@ -49,11 +49,15 @@ function_die() {
 
 quiet_die() {
     local exitcode=$?
+    local message="$1"
+    echo "$message"
     exit $exitcode
 }
 
 function_quiet_die() {
     local exitcode=$?
+    local message="$1"
+    echo "$message"
     return $exitcode
 }
 
