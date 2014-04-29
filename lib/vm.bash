@@ -82,8 +82,9 @@ setup_git_repo() {
     local branch=$2
     local bare_repo_root_dir=$3
     local dest_repo_dir=$4
-    local localrc_repo_var=${5:-""}
-    local post_receive_vars=${6:-""}
+    local devstack_home_dir=${5:-""}
+    local localrc_repo_var=${6:-""}
+    local post_receive_vars=${7:-""}
 
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

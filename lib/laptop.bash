@@ -140,7 +140,7 @@ check_ssh() {
     local user_and_host=$1
     # attempt ssh login with default cert; it must succeed
     set +e
-    # TODO would it be better to test for existence of gpdrepos/project.git?
+    # TODO would it be better to test for existence of gpdrepos/project.git instead of running true
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no $user_and_host -C "true" &> /dev/null
     rc=$?
     set -e
