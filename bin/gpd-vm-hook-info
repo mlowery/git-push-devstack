@@ -22,6 +22,24 @@ usage() {
     exit 1
 }
 
+while [[ $# > 1 ]]; do
+key="$1"
+shift
+
+case $key in
+    -p|--project)
+    project=$1
+    shift
+    ;;
+    -h|--help)
+    usage
+    ;;
+    *)
+    usage "ERROR: Unknown option: $key"
+    ;;
+esac
+done
+
 [[ -z $project ]] && usage "ERROR: --project is required"
 
 "$me_dir/../post-receive/$project.bash" --show-vars
