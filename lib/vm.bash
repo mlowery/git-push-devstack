@@ -105,7 +105,7 @@ setup_git_repo() {
     fi
 
     # check this hook's vars
-    if [[ ! "$post_receive_path" --check-vars "$post_receive_vars" ]]; then
+    if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
         return 1
     fi
 

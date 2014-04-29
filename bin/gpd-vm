@@ -117,7 +117,7 @@ dest_repo_dir=${dest_repo_dir:-/opt/stack/$(project_from_repo_url $start_repo)}
 
 [[ $skip_localrc == 1 ]] && localrc_repo_var=""
 
-if [[ ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var ]]; then
+if ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var; then
     die $LINENO "ERROR: Script failed. --post-receive-vars may be required."
 fi
 
