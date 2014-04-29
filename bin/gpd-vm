@@ -22,6 +22,7 @@ USAGE
            [--localrc-repo-dir <localrc-repo-var>]
            [--start-branch <start-branch>]
            [--bare-repo-root-dir <bare-repo-root-dir>]
+           [--post-receive-vars <post-receive-vars>]
            [--help]
 
 DESCRIPTION
@@ -34,6 +35,9 @@ tree.
 
     In order to push to the bare repo, you must setup key-based SSH login for
 the user running this script.
+
+    Some post-receive hooks require additional variables. Run:
+        gpd vm-hook-info <project>.
 
 DEFAULTS
     --start-branch $default_start_branch

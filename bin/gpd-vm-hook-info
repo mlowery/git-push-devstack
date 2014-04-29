@@ -1,0 +1,27 @@
+#!/bin/bash
+
+me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# approach borrowed from git-stash
+dashless=$(basename "$0" | sed -e 's/-/ /')
+USAGE="
+NAME
+    gpd vm-hook-info - print info about hook including extra vars
+
+USAGE
+    $dashless --project <project>
+               [--help]
+"
+
+usage() {
+    local extra=${1:-""}
+    if [[ -n "$extra" ]]; then
+        printf "$extra\n"
+    fi
+    printf "$USAGE\n"
+    exit 1
+}
+
+[[ -z $project ]] && usage "ERROR: --project is required"
+
+"$me_dir/../post-receive/$project.bash" --show-vars
