@@ -13,10 +13,13 @@ Step 1 is to run `gpd vm` on your DevStack VM after cloning DevStack but before
 running `stack.sh`:
 
 ```bash
+# clone DevStack
 git clone https://github.com/openstack-dev/devstack.git ~/devstack
-sudo mkdir -p /opt/stack && sudo chown $(whoami) /opt/stack
+# clone gpd
 git clone https://github.com/mlowery/git-push-devstack.git
+# setup gpd
 cd git-push-devstack/bin && ./gpd vm --start-repo https://github.com/openstack/horizon.git
+# run DevStack's stack.sh
 cd ~/devstack && ./stack.sh
 ```
 
@@ -60,7 +63,22 @@ Additionally, services are restarted during the hook--in general, whatever is
 necessary for your changes to fully take effect (e.g. `service apache2 restart`).
 
 `gpd laptop` sets up a [remote](http://git-scm.com/book/en/Git-Basics-Working-with-Remotes)
-which is just a destination for your git pushes.
+which is just a destination for your git pushes. Pushes to the bare repository
+are forced meaning you can jump between changes. Finally, just to be safe, all
+changes in the `/opt/stack/<project> directory` are stashed or tagged to
+prevent any local changes you may have made while hacking (but you should avoid
+that kind of hacking).
+
+## What OpenStack Projects Are Supported
+
+There are `post-receive` hooks for the following projects:
+* horizon
+* trove
+* trove-integration
+* python-troveclient
+
+Adding more post-receive hooks is as simple as adding a file to the
+`post-receive` directory.
 
 ## Best Practices
 

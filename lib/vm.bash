@@ -25,7 +25,7 @@ backup_stash() {
     # quiet exits with 1 if there were differences and 0 means no differences
     if ! git_cmd $repo_path diff --quiet; then
         echo "Stashing changes..."
-        git_cmd $repo_path stash save -u "git_push_devstack_$(safe_date)"
+        git_cmd $repo_path stash save -u "gpd-$(safe_date)"
     fi
 }
 
@@ -33,7 +33,7 @@ backup_tag() {
     local repo_path=$1
     # describe exits with 0 if a tag points to same commit as HEAD
     #git_cmd $repo_path describe --exact-match --tags HEAD &> /dev/null
-    git_cmd $repo_path tag "git_push_devstack_$(safe_date)"
+    git_cmd $repo_path tag "gpd-$(safe_date)"
 }
 
 post_receive() {
@@ -48,6 +48,10 @@ post_receive() {
 post_receive_begin() {
     set -e
     trap 'err ${LINENO} "post-receive hook failed"' EXIT
+    read oldrev newrev refname
+    log_info "Old revision: $oldrev"
+    log_info "New revision: $newrev"
+    log_info "Reference name: $refname"
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     source $dir/gpdrc
 }
@@ -62,6 +66,7 @@ project_from_repo_url() {
     local last_path_segment=${git_repo_url##*/}
     # %% deletes from end using regex
     local project=${last_path_segment%%.*}
+    # TODO: basename $git_repo_url .git
     echo $project
 }
 
@@ -77,8 +82,8 @@ setup_git_repo() {
     local branch=$2
     local bare_repo_root_dir=$3
     local dest_repo_dir=$4
-    local devstack_home_dir=${5:-""}
-    local localrc_repo_var=${6:-""}
+    local localrc_repo_var=${5:-""}
+    local post_receive_vars=${6:-""}
 
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -86,24 +91,39 @@ setup_git_repo() {
         mkdir $bare_repo_root_dir
     fi
 
+    dest_repo_dir_parent=$(dirname "$dest_repo_dir")
+    if [[ ! -d "$dest_repo_dir_parent" ]]; then
+        sudo mkdir -p "$dest_repo_dir_parent"
+        sudo chown $(whoami) "$dest_repo_dir_parent"
+    fi
+
     local short_name=$(project_from_repo_url $git_repo_url)
 
-    if [[ ! -x $dir/../post-receive/$short_name.bash ]]; then
-        die $LINENO "$dir/../post-receive/$short_name.bash is missing or not executable"
+    local post_receive_path="$dir/../post-receive/$short_name.bash"
+    if [[ ! -x "$post_receive_path" ]]; then
+        die $LINENO "$post_receive_path is missing or not executable"
+    fi
+
+    # check this hook's vars
+    if [[ ! "$post_receive_path" --check-vars "$post_receive_vars" ]]; then
+        return 1
     fi
 
     local bare_repo_dir=$bare_repo_root_dir/$short_name.git
 
+    #TODO idempotent
     if [[ ! -d $bare_repo_dir ]]; then
 
         git clone --bare $git_repo_url $bare_repo_dir
         echo -e "\ndest_repo_dir=$dest_repo_dir" > $bare_repo_dir/hooks/gpdrc
-        echo -e "\ndevstack_home_dir=$devstack_home_dir" >> $bare_repo_dir/hooks/gpdrc
+        echo -e "\n$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
+
         ln -s $dir/../lib/common.bash $bare_repo_dir/hooks/common.bash
         ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
         ln -s $dir/../post-receive/$short_name.bash $bare_repo_dir/hooks/post-receive
         git clone $bare_repo_dir $dest_repo_dir
-        git --git-dir=$dest_repo_dir/.git --work-tree=$dest_repo_dir checkout $branch
+        git_cmd $dest_repo_dir checkout $branch
+        #TODO clone or pull
 
         if [[ -n "$localrc_repo_var" ]]; then
             echo -e "\n$localrc_repo_var=$bare_repo_dir" >> $devstack_home_dir/localrc

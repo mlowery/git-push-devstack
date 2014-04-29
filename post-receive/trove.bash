@@ -91,12 +91,9 @@ fix_guestagent_conf() {
 main() {
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     source $dir/vm.bash
+
     post_receive_begin
     post_receive $dest_repo_dir
-
-
-    GUEST_IP=${GUEST_IP:-10.0.0.2}
-    GUEST_USERNAME=${GUEST_USERNAME:-`whoami`}
 
     fix_guestagent_conf
     restart_tr_api
@@ -107,4 +104,33 @@ main() {
     post_receive_end
 }
 
-main
+check_vars() {
+    local vars=$1
+    (
+    eval "$vars"
+    [[ -z $devstack_home_dir ]] && echo "ERROR: devstack_home_dir is required" && return 1
+    )
+}
+
+show_vars() {
+USAGE="
+POST-RECEIVE VARS
+    guest_ip: IP of trove instance to which to push code updates
+    devstack_home_dir: DevStack dir (used to call DevStack functions)
+"
+echo $USAGE
+}
+
+case $1 in
+    --check-vars)
+    check_vars "$2"
+    shift
+    ;;
+    --show-vars)
+    show_vars
+    ;;
+    *)
+    main
+    ;;
+esac
+
