@@ -110,9 +110,8 @@ check_vars() {
     local vars=$1
     (
     eval "$vars"
-    echo "vars=$vars"
-    echo "devstack_home_dir=$devstack_home_dir"
     post_receive_check_vars "${BASH_SOURCE[0]}" devstack_home_dir
+    echo "here"
     )
 }
 
