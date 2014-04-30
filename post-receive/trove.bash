@@ -111,12 +111,9 @@ check_vars() {
     (
     eval "$vars"
     echo "vars=$vars"
+    echo "devstack_home_dir=$devstack_home_dir"
     post_receive_check_vars "${BASH_SOURCE[0]}" devstack_home_dir
     )
-
-    #TODO move to vm.bash to enforce consistency
-    #TODO print name of post-receive file
-    #TODO print format required for the arg
 }
 
 show_vars() {
