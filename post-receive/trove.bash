@@ -110,7 +110,7 @@ check_vars() {
     local vars=$1
     (
     eval "$vars"
-    post_receive_check_vars devstack_home_dir
+    post_receive_check_vars "${BASH_SOURCE[0]}" devstack_home_dir
     )
 
     #TODO move to vm.bash to enforce consistency
