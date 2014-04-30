@@ -94,13 +94,24 @@ err_if_not_set() {
     return $exitcode
 }
 
-replace_in_file() {
-    local tmp_file=`mktemp`
-    local sed="$1"
-    local file="$2"
-    # undef $/ means file is treated as a whole as opposed to line by line
-    perl -e "undef \$/; \$myfile = <STDIN>; \$myfile =~ $sed; print \$myfile" < "$file" > "$tmp_file"
-    mv "$tmp_file" "$file"
+#replace_in_file() {
+#    local tmp_file=`mktemp`
+#    local sed="$1"
+#    local file="$2"
+#    # undef $/ means file is treated as a whole as opposed to line by line
+#    perl -e "undef \$/; \$myfile = <STDIN>; \$myfile =~ $sed; print \$myfile" < "$file" > "$tmp_file"
+#    mv "$tmp_file" "$file"
+#}
+
+add_or_replace_in_file() {
+    local search=$1
+    local replace=$2
+    local file=$3
+    if grep $search $file; then
+        sed -i "s@$search@$replace@" $file
+    else
+        echo -e "\n$replace" >> $file
+    fi
 }
 
 # date for use in filenames

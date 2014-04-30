@@ -156,13 +156,13 @@ setup_git_repo() {
         #TODO clone or pull
 
         if [[ -n "$localrc_repo_var" ]]; then
-            sed -i "s@^$localrc_repo_var=.*@$localrc_repo_var=$bare_repo_dir@" ~/devstack/localrc
+            add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" ~/devstack/localrc
         fi
     else
         echo "WARN: $bare_repo_dir already exists"
     fi
     # update vars every time
-    echo -e "\ndest_repo_dir=$dest_repo_dir" > $bare_repo_dir/hooks/gpdrc
-    echo -e "\n$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
+    add_or_replace_in_file "^dest_repo_dir=.*" "dest_repo_dir=$dest_repo_dir" $bare_repo_dir/hooks/gpdrc
+    echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
 
 }

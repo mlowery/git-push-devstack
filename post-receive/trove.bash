@@ -111,7 +111,6 @@ check_vars() {
     (
     eval "$vars"
     post_receive_check_vars "${BASH_SOURCE[0]}" devstack_home_dir
-    echo "here"
     )
 }
 
