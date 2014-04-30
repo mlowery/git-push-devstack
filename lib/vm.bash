@@ -96,16 +96,6 @@ post_receive_format_script_name() {
     echo $(basename $script .bash)
 }
 
-project_from_repo_url() {
-    local git_repo_url=$1
-    # ## deletes from beginning using regex
-    local last_path_segment=${git_repo_url##*/}
-    # %% deletes from end using regex
-    local project=${last_path_segment%%.*}
-    # TODO: basename $git_repo_url .git
-    echo $project
-}
-
 localrc_var_from_repo_url() {
     local git_repo_url=$1
     local project=$(project_from_repo_url $git_repo_url)

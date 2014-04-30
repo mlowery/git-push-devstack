@@ -16,12 +16,12 @@ NAME
     gpd laptop - setup git remote on local clone
 
 USAGE
-    $dashless --project <project>
-               --git-work-dir <git-work-dir>
+    $dashless --git-work-dir <git-work-dir>
                --host <host>
                [--remote-user <remote-user>]
                [--bare-repo-root-dir <bare-repo-root-dir]
                [--remote-name <remote-name>]
+               [--project <project>]
                [--help]
 
 DEFAULTS
@@ -87,12 +87,12 @@ esac
 done
 
 source "$me_dir/../lib/laptop.bash"
-[[ -z $project ]] && usage "ERROR: --project is required"
-# TODO make project optional (derived from origin remote in git-work-dir)
+#[[ -z $project ]] && usage "ERROR: --project is required"
 [[ -z $git_work_dir ]] && usage "ERROR: --git-work-dir is required"
 [[ -z $host ]] && usage "ERROR: --host is required"
 # TODO print INFO lines for everything being done
 
+project=${project:-$(project_from_git_work_dir $git_work_dir)}
 remote_user=${user:-${GPD_REMOTE_USER:-$default_remote_user}}
 bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$remote_user/gpdrepos}}
 remote_name=${remote_name:-$(make_remote_name $host)}

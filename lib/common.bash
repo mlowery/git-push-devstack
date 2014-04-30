@@ -140,3 +140,13 @@ log_info() {
     local msg=$1
     echo "INFO: $msg"
 }
+
+
+project_from_repo_url() {
+    local git_repo_url=$1
+#    # ## deletes from beginning using regex
+#    local last_path_segment=${git_repo_url##*/}
+#    # %% deletes from end using regex
+#    local project=${last_path_segment%%.*}
+    echo $(basename $git_repo_url .git)
+}

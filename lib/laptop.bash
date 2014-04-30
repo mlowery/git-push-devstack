@@ -166,3 +166,9 @@ make_remote_name() {
     #local remote_name=${9:-${auto_remote_name}}
     echo $auto_remote_name
 }
+
+project_from_git_work_dir() {
+    local git_work_dir=$1
+    local fetch_url=$(git_cmd $git_work_dir remote -v | grep "^origin[[:blank:]].*fetch" | cut -f 2 | cut -d " " -f 1)
+    project_from_repo_url $fetch_url
+}

@@ -95,6 +95,9 @@ main() {
     post_receive_begin
     post_receive $dest_repo_dir
 
+    GUEST_IP=${GUEST_IP:-10.0.0.2}
+    GUEST_USERNAME=${GUEST_USERNAME:-`whoami`}
+
     fix_guestagent_conf
     restart_tr_api
     restart_tr_tmgr
