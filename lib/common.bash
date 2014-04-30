@@ -110,7 +110,7 @@ add_or_replace_in_file() {
     if [[ ! -f $file ]]; then
         touch $file
     fi
-    if grep $search $file; then
+    if grep $search $file &> /dev/null; then
         sed -i "s@$search@$replace@" $file
     else
         echo -e "\n$replace" >> $file
