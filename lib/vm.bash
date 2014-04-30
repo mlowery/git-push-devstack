@@ -105,7 +105,7 @@ localrc_var_from_repo_url() {
     local git_repo_url=$1
     local project=$(project_from_repo_url $git_repo_url)
     local localrc_var=${project##python-}
-    echo ${localrc_var}_REPO
+    echo ${localrc_var^^}_REPO
 }
 
 setup_git_repo() {
@@ -143,12 +143,10 @@ setup_git_repo() {
 
     local bare_repo_dir=$bare_repo_root_dir/$short_name.git
 
-    #TODO idempotent
+    #TODO think about idempotency
     if [[ ! -d $bare_repo_dir ]]; then
 
         git clone --bare $git_repo_url $bare_repo_dir
-        echo -e "\ndest_repo_dir=$dest_repo_dir" > $bare_repo_dir/hooks/gpdrc
-        echo -e "\n$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
 
         ln -s $dir/../lib/common.bash $bare_repo_dir/hooks/common.bash
         ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
@@ -158,7 +156,13 @@ setup_git_repo() {
         #TODO clone or pull
 
         if [[ -n "$localrc_repo_var" ]]; then
-            echo -e "\n$localrc_repo_var=$bare_repo_dir" >> $devstack_home_dir/localrc
+            sed -i "s@^$localrc_repo_var=.*@$localrc_repo_var=$bare_repo_dir@" ~/devstack/localrc
         fi
+    else
+        echo "WARN: $bare_repo_dir already exists"
     fi
+    # update vars every time
+    echo -e "\ndest_repo_dir=$dest_repo_dir" > $bare_repo_dir/hooks/gpdrc
+    echo -e "\n$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
+
 }
