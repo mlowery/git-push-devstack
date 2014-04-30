@@ -110,9 +110,9 @@ check_vars() {
     local vars=$1
     (
     eval "$vars"
-    [[ -z $devstack_home_dir ]] && echo "ERROR: devstack_home_dir is required" && return 1
-    )
     post_receive_check_vars devstack_home_dir
+    )
+
     #TODO move to vm.bash to enforce consistency
     #TODO print name of post-receive file
     #TODO print format required for the arg

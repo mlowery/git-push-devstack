@@ -83,7 +83,7 @@ post_receive_check_vars() {
             echo "ERROR: $var is missing or invalid"
         fi
     done
-    return errors
+    return $errors
 }
 
 post_receive_format_script_name() {
