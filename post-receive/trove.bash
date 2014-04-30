@@ -105,20 +105,25 @@ main() {
 }
 
 check_vars() {
+    local me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $me_dir/../lib/vm.bash
     local vars=$1
     (
     eval "$vars"
     [[ -z $devstack_home_dir ]] && echo "ERROR: devstack_home_dir is required" && return 1
     )
+    post_receive_check_var devstack_home_dir
+    #TODO move to vm.bash to enforce consistency
+    #TODO print name of post-receive file
+    #TODO print format required for the arg
 }
 
 show_vars() {
-USAGE="
-POST-RECEIVE VARS
-    guest_ip: IP of trove instance to which to push code updates
-    devstack_home_dir: DevStack dir (used to call DevStack functions)
-"
-echo $USAGE
+    local me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $me_dir/../lib/vm.bash
+    var_desc="guest_ip: IP of trove instance to which to push code updates
+    devstack_home_dir: DevStack dir (used to call DevStack functions)"
+    post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"
 }
 
 case $1 in

@@ -70,6 +70,39 @@ err() {
     return $exitcode
 }
 
+# Test if the named environment variable is set and not zero length
+# is_set env-var
+is_set() {
+    local var=\$"$1"
+    eval "[ -n \"$var\" ]" # For ex.: sh -c "[ -n \"$var\" ]" would be better, but several exercises depends on this
+}
+
+# Checks an environment variable is not set or has length 0 OR if the
+# exit code is non-zero and prints "message"
+# NOTE: env-var is the variable name without a '$'
+# err_if_not_set $LINENO env-var "message"
+err_if_not_set() {
+    local exitcode=$?
+    errinsXTRACE=$(set +o | grep xtrace)
+    set +o xtrace
+    local line=$1; shift
+    local evar=$1; shift
+    if ! is_set $evar || [ $exitcode != 0 ]; then
+        err $line "$*"
+    fi
+    $errinsXTRACE
+    return $exitcode
+}
+
+replace_in_file() {
+    local tmp_file=`mktemp`
+    local sed="$1"
+    local file="$2"
+    # undef $/ means file is treated as a whole as opposed to line by line
+    perl -e "undef \$/; \$myfile = <STDIN>; \$myfile =~ $sed; print \$myfile" < "$file" > "$tmp_file"
+    mv "$tmp_file" "$file"
+}
+
 # date for use in filenames
 safe_date() {
     date +%Y_%m_%d__%H_%M_%S

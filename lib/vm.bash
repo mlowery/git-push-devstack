@@ -60,6 +60,37 @@ post_receive_end() {
     trap - EXIT
 }
 
+post_receive_show_vars() {
+    local file=$1
+    local lines="$2"
+    echo "$(post_receive_format_script_name $file) VARIABLES"
+    while read -r line; do
+        printf "    $line\n"
+    done <<< "$lines"
+}
+
+post_receive_check_vars() {
+    local file=$1
+    local lines="$2"
+    local errors=0
+    for var in "$@"; do
+        if [[ ! is_set $var ]]; then
+            if [[ $errors == 0 ]]; then
+                echo "$(post_receive_format_script_name $file) SETUP ERRORS"
+                echo "(Use gpd vm-hook-info to see variables for this hook)"
+            fi
+            errors=$((errors+1))
+            echo "ERROR: $var is missing or invalid"
+        fi
+    done
+    return errors
+}
+
+post_receive_format_script_name() {
+    local script=$1
+    echo $(basename $script .bash)
+}
+
 project_from_repo_url() {
     local git_repo_url=$1
     # ## deletes from beginning using regex
