@@ -74,7 +74,7 @@ post_receive_check_vars() {
     local lines="$2"
     local errors=0
     for var in "$@"; do
-        if [[ ! is_set $var ]]; then
+        if ! is_set $var; then
             if [[ $errors == 0 ]]; then
                 echo "$(post_receive_format_script_name $file) SETUP ERRORS"
                 echo "(Use gpd vm-hook-info to see variables for this hook)"
