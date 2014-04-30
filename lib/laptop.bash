@@ -126,22 +126,24 @@ go() {
     local bare_repo_root_dir=$5
     local remote_name=$6
 
-    check_ssh $user@$host
+    local vm_repo_path=$(make_bare_repo_path $bare_repo_root_dir $project)
+    check_ssh $user@$host $vm_repo_path
 
     if git_cmd "$git_dir" remote -v | grep "^$remote_name[[:blank:]]" > /dev/null; then
         function_die $LINENO "git remote with name \"$remote_name\" already exists."
     else
-        git_cmd "$git_dir" remote add $remote_name $user@$host:$(make_bare_repo_path $bare_repo_root_dir $project)
+        git_cmd "$git_dir" remote add $remote_name $user@$host:$vm_repo_path
     fi
     git_cmd "$git_dir" config --local remote.$remote_name.push +HEAD:refs/heads/master
 }
 
 check_ssh() {
     local user_and_host=$1
+    local path=$2
     # attempt ssh login with default cert; it must succeed
     set +e
     # TODO would it be better to test for existence of gpdrepos/project.git instead of running true
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no $user_and_host -C "true" &> /dev/null
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no $user_and_host -C "ls $path" &> /dev/null
     rc=$?
     set -e
     if [[ $rc -ne 0 ]]; then

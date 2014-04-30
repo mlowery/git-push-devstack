@@ -151,7 +151,7 @@ setup_git_repo() {
         git_cmd $dest_repo_dir checkout $branch
         #TODO clone or pull
 
-        if [[ -n "$localrc_repo_var" ]]; then
+        if [[ "$localrc_repo_var" ]]; then
             add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" ~/devstack/localrc
         fi
     else
