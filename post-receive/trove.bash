@@ -108,10 +108,7 @@ check_vars() {
     local me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     source $me_dir/../lib/vm.bash
     local vars=$1
-    (
-    eval "$vars"
-    post_receive_check_vars "${BASH_SOURCE[0]}" devstack_home_dir
-    )
+    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars" devstack_home_dir
 }
 
 show_vars() {

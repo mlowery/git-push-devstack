@@ -70,9 +70,13 @@ post_receive_show_vars() {
 }
 
 post_receive_check_vars() {
+    (
     local file=$1
-    local lines="$2"
+    local vars="$2"
     local errors=0
+
+    eval "$vars"
+
     for var in "$@"; do
         if ! is_set $var; then
             if [[ $errors == 0 ]]; then
@@ -84,6 +88,7 @@ post_receive_check_vars() {
         fi
     done
     return $errors
+    )
 }
 
 post_receive_format_script_name() {
@@ -137,9 +142,10 @@ setup_git_repo() {
     fi
 
     # check this hook's vars
-    if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
-        return 1
-    fi
+    #if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
+    #    return 1
+    #fi
+    #TODO come back to check-vars code
 
     local bare_repo_dir=$bare_repo_root_dir/$short_name.git
 
@@ -163,6 +169,7 @@ setup_git_repo() {
     fi
     # update vars every time
     add_or_replace_in_file "^dest_repo_dir=.*" "dest_repo_dir=$dest_repo_dir" $bare_repo_dir/hooks/gpdrc
-    echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
+    add_or_replace_in_file "^devstack_home_dir=.*" "devstack_home_dir=$devstack_home_dir"  $bare_repo_dir/hooks/gpdrc
+    #echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
 
 }
