@@ -107,6 +107,9 @@ add_or_replace_in_file() {
     local search=$1
     local replace=$2
     local file=$3
+    if [[ ! -f $file ]]; then
+        touch $file
+    fi
     if grep $search $file; then
         sed -i "s@$search@$replace@" $file
     else
