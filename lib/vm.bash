@@ -79,7 +79,7 @@ post_receive_check_vars() {
 
     eval "$vars"
 
-    for var in "$@"; do
+    for var in "${@:3}"; do
         if ! is_set $var; then
             if [[ $errors == 0 ]]; then
                 echo "$(post_receive_format_script_name $file) SETUP ERRORS"

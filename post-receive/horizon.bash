@@ -15,4 +15,29 @@ main() {
     post_receive_end
 }
 
-main
+check_vars() {
+    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $my_dir/../lib/vm.bash
+    local vars=$1
+    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars"
+}
+
+show_vars() {
+    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $my_dir/../lib/vm.bash
+    var_desc=""
+    post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"
+}
+
+case $1 in
+    --check-vars)
+    check_vars "$2"
+    shift
+    ;;
+    --show-vars)
+    show_vars
+    ;;
+    *)
+    main
+    ;;
+esac
