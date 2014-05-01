@@ -48,6 +48,8 @@ quiet_die() {
     exit $exitcode
 }
 
+# TODO prettier die methods
+
 function_quiet_die() {
     local exitcode=$?
     local message="$1"
