@@ -91,10 +91,7 @@ post_receive_check_vars() {
     done
     return $errors
     )
-    local exit_code=$?
-    echo "post_receive_check_vars returning $exit_code"
-    # return return code of subshell
-    return $exit_code
+    return $?
 }
 
 post_receive_format_script_name() {

@@ -125,7 +125,7 @@ show_vars() {
 case $1 in
     --check-vars)
     check_vars "$2"
-    shift
+    exit $?
     ;;
     --show-vars)
     show_vars
@@ -135,3 +135,4 @@ case $1 in
     ;;
 esac
 
+exit 0
