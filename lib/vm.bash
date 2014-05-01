@@ -91,6 +91,8 @@ post_receive_check_vars() {
     done
     return $errors
     )
+    # return return code of subshell
+    return $?
 }
 
 post_receive_format_script_name() {
