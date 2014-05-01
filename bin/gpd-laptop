@@ -16,7 +16,7 @@ NAME
 
 USAGE
     $dashless --git-work-dir <git-work-dir>
-               --host <host>
+               --vm <vm>
                [--remote-user <remote-user>]
                [--bare-repo-root-dir <bare-repo-root-dir]
                [--remote-name <remote-name>]
@@ -26,7 +26,7 @@ USAGE
 DEFAULTS
     --remote-user: $default_remote_user
     --bare-repo-root-dir: $default_bare_repo_root_dir
-    --remote-name: derived from --host
+    --remote-name: derived from --vm
     --project: derived from \"origin\" remote found at --git-work-dir
 
 ENVIRONMENT VARIABLES
@@ -34,9 +34,9 @@ ENVIRONMENT VARIABLES
     GPD_BARE_REPO_ROOT_DIR: Absolute path to dir containing all bare repos on
                             DevStack VM
     GPD_AUTO_REMOTE_NAME_PREFIX: When --remote_name not specified, add this
-                                 prefix to remote name derived from --host
+                                 prefix to remote name derived from --vm
     GPD_AUTO_REMOTE_NAME_SUFFIX: When --remote_name not specified, add this
-                                 suffix to remote name derived from --host
+                                 suffix to remote name derived from --vm
 "
 
 usage() {
@@ -57,8 +57,8 @@ case $key in
     git_work_dir="$1"
     shift
     ;;
-    -s|--host)
-    host="$1"
+    -s|--vm)
+    vm="$1"
     shift
     ;;
     -b|--bare-repo-root-dir)
@@ -77,6 +77,9 @@ case $key in
     project=$1
     shift
     ;;
+    -v|--verbose)
+    verbose=1
+    ;;
     -h|--help)
     usage
     ;;
@@ -89,18 +92,25 @@ done
 source "$my_dir/../lib/laptop.bash"
 #[[ -z $project ]] && usage "ERROR: --project is required"
 [[ -z $git_work_dir ]] && usage "ERROR: --git-work-dir is required"
-[[ -z $host ]] && usage "ERROR: --host is required"
+[[ -z $vm ]] && usage "ERROR: --vm is required"
 
 project=${project:-$(project_from_git_work_dir $git_work_dir)}
 remote_user=${user:-${GPD_REMOTE_USER:-$default_remote_user}}
 bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$remote_user/gpdrepos}}
-remote_name=${remote_name:-$(make_remote_name $host)}
+remote_name=${remote_name:-$(make_remote_name $vm)}
+verbose=${verbose:-${GPD_VERBOSE}:-0}
 
-log_info "git_work_dir=$git_work_dir"
-log_info "project=$project"
-log_info "bare_repo_root_dir=$bare_repo_root_dir"
-log_info "remote_name=$remote_name"
-log_info "remote_user=$remote_user"
-log_info "host=$host"
+if [[ $verbose == 1 ]]; then
+    log_info "git_work_dir=$git_work_dir"
+    log_info "project=$project"
+    log_info "bare_repo_root_dir=$bare_repo_root_dir"
+    log_info "remote_name=$remote_name"
+    log_info "remote_user=$remote_user"
+    log_info "vm=$vm"
+fi
 
-setup_remote $project $git_work_dir $host $remote_user "$bare_repo_root_dir" "$remote_name"
+setup_remote $project $git_work_dir $vm $remote_user "$bare_repo_root_dir" "$remote_name"
+
+if [[ $verbose == 1 ]]; then
+    log_info "Created git remote \"$remote_name\""
+fi
