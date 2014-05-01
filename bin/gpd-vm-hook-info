@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # approach borrowed from git-stash
 dashless=$(basename "$0" | sed -e 's/-/ /')
@@ -42,4 +42,6 @@ done
 
 [[ -z $project ]] && usage "ERROR: --project is required"
 
-"$me_dir/../post-receive/$project.bash" --show-vars
+log_info "project=$project"
+
+"$my_dir/../post-receive/$project.bash" --show-vars

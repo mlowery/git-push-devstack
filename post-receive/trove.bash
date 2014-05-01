@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 stop_tr_api() {
     stop_screen_window tr-api bin/trove-api
@@ -108,15 +108,15 @@ main() {
 }
 
 check_vars() {
-    local me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $me_dir/../lib/vm.bash
+    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $my_dir/../lib/vm.bash
     local vars=$1
     post_receive_check_vars "${BASH_SOURCE[0]}" "$vars" devstack_home_dir
 }
 
 show_vars() {
-    local me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $me_dir/../lib/vm.bash
+    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    source $my_dir/../lib/vm.bash
     var_desc="guest_ip: IP of trove instance to which to push code updates
     devstack_home_dir: DevStack dir (used to call DevStack functions)"
     post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"

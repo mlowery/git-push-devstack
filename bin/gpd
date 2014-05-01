@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
-me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-me=$(basename "$0")
-USAGE="Usage: $me vm [<options>]
-   or: $me laptop [<options>]"
+my_name=$(basename "$0")
+USAGE="Usage: $my_name vm [<options>]
+   or: $my_name laptop [<options>]"
 
 forward=gpd-$1
-if [[ -x "$me_dir/$forward" ]]; then
-    "$me_dir/$forward" "${@:2}"
+if [[ -x "$my_dir/$forward" ]]; then
+    "$my_dir/$forward" "${@:2}"
 else
     printf "$USAGE\n"
     exit 1

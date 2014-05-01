@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Some functions copied from DevStack itself
 
@@ -77,32 +77,6 @@ is_set() {
     eval "[ -n \"$var\" ]" # For ex.: sh -c "[ -n \"$var\" ]" would be better, but several exercises depends on this
 }
 
-# Checks an environment variable is not set or has length 0 OR if the
-# exit code is non-zero and prints "message"
-# NOTE: env-var is the variable name without a '$'
-# err_if_not_set $LINENO env-var "message"
-err_if_not_set() {
-    local exitcode=$?
-    errinsXTRACE=$(set +o | grep xtrace)
-    set +o xtrace
-    local line=$1; shift
-    local evar=$1; shift
-    if ! is_set $evar || [ $exitcode != 0 ]; then
-        err $line "$*"
-    fi
-    $errinsXTRACE
-    return $exitcode
-}
-
-#replace_in_file() {
-#    local tmp_file=`mktemp`
-#    local sed="$1"
-#    local file="$2"
-#    # undef $/ means file is treated as a whole as opposed to line by line
-#    perl -e "undef \$/; \$myfile = <STDIN>; \$myfile =~ $sed; print \$myfile" < "$file" > "$tmp_file"
-#    mv "$tmp_file" "$file"
-#}
-
 add_or_replace_in_file() {
     local search=$1
     local replace=$2
@@ -144,9 +118,5 @@ log_info() {
 
 project_from_repo_url() {
     local git_repo_url=$1
-#    # ## deletes from beginning using regex
-#    local last_path_segment=${git_repo_url##*/}
-#    # %% deletes from end using regex
-#    local project=${last_path_segment%%.*}
     echo $(basename $git_repo_url .git)
 }

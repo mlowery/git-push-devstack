@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 copy_horizon_local_settings() {
     cp $dest_repo_dir/openstack_dashboard/local/local_settings.py.example $dest_repo_dir/openstack_dashboard/local/local_settings.py
@@ -9,7 +9,7 @@ main() {
     source $dir/vm.bash
     post_receive_begin
     post_receive $dest_repo_dir
-    #TODO(mat) source lib/horizon then init_horizon then restart_apache_server
+    # TODO source lib/horizon then init_horizon then restart_apache_server
     copy_horizon_local_settings
     sudo service apache2 restart
     post_receive_end

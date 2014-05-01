@@ -2,7 +2,7 @@
 
 ## Introduction
 
-git-push-devstack (gpd) is a development workflow for OpenStack. With gpd, `git
+git-push-devstack (gpd) is a development workflow for OpenStack projects. With gpd, `git
 push` serves as a mechanism for copying changes from your laptop (or wherever
 you code) to your DevStack VM. `git push` also serves as a mechanism to trigger
 any restarts or other actions upon uploading new code.
@@ -46,6 +46,15 @@ git push gpd-horizontest
 While there is a commit necessary per push, you get built-in push history by
 doing so (use interactive rebase to squash commits before submitting to
 Gerrit). And if you hate commit proliferation, use `--amend` every time.
+
+## Requirements
+
+gpd requires only bash and git.
+
+## Installation
+
+On both the VM and the laptop, the installation is just cloning this repository
+and possibly adding the `bin` directory to your `PATH`.
 
 ## Who's It For
 

@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
-me_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # defaults
 default_start_branch=master
@@ -107,7 +107,7 @@ esac
 done
 
 
-source "$me_dir/../lib/vm.bash"
+source "$my_dir/../lib/vm.bash"
 [[ -z $start_repo ]] && usage "ERROR: --start-repo is required"
 #[[ -z $dest_repo_dir ]] && usage "ERROR: --dest-repo-dir is required"
 #[[ -n $localrc_repo_var && -z $devstack_home_dir ]] && usage "ERROR: --devstack-home-dir is required when --localrc_repo_var present"
@@ -124,9 +124,15 @@ dest_repo_dir=${dest_repo_dir:-/opt/stack/$(project_from_repo_url $start_repo)}
 
 [[ $skip_localrc == 1 ]] && localrc_repo_var=""
 
+log_info "start_repo=$start_repo"
+log_info "bare_repo_root_dir=$bare_repo_root_dir"
+log_info "start_branch=$start_branch"
+log_info "devstack_home_dir=$devstack_home_dir"
+log_info "skip_localrc=$skip_localrc"
+log_info "localrc_repo_var=$localrc_repo_var"
+log_info "dest_repo_dir=$dest_repo_dir"
+log_info "post_receive_vars=$post_receive_vars"
+
 if ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
     die $LINENO "ERROR: Script failed. --post-receive-vars may be required."
 fi
-
-# TODO rename this call
-# TODO remove unused code from libs

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/common.bash
 
 start_screen_window() {
@@ -132,14 +134,12 @@ setup_git_repo() {
     fi
 
     # check this hook's vars
-    #if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
-    #    return 1
-    #fi
-    #TODO come back to check-vars code
+    if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
+        return 1
+    fi
 
     local bare_repo_dir=$bare_repo_root_dir/$short_name.git
 
-    #TODO think about idempotency
     if [[ ! -d $bare_repo_dir ]]; then
 
         git clone --bare $git_repo_url $bare_repo_dir
@@ -149,13 +149,12 @@ setup_git_repo() {
         ln -s $dir/../post-receive/$short_name.bash $bare_repo_dir/hooks/post-receive
         git clone $bare_repo_dir $dest_repo_dir
         git_cmd $dest_repo_dir checkout $branch
-        #TODO clone or pull
 
         if [[ "$localrc_repo_var" ]]; then
             add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" ~/devstack/localrc
         fi
     else
-        echo "WARN: $bare_repo_dir already exists"
+        echo "WARN: $bare_repo_dir already exists; only writing gpdrc"
     fi
     # update vars every time
     add_or_replace_in_file "^dest_repo_dir=.*" "dest_repo_dir=$dest_repo_dir" $bare_repo_dir/hooks/gpdrc

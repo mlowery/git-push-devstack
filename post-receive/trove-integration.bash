@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 main() {
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
