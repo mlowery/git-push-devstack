@@ -17,7 +17,7 @@ running `stack.sh`:
 git clone https://github.com/openstack-dev/devstack.git ~/devstack
 # clone gpd
 git clone https://github.com/mlowery/git-push-devstack.git
-# setup gpd
+# setup vm to receive pushes
 cd git-push-devstack/bin && ./gpd vm --start-repo https://github.com/openstack/horizon.git
 # run DevStack's stack.sh
 cd ~/devstack && ./stack.sh
@@ -26,11 +26,14 @@ cd ~/devstack && ./stack.sh
 Step 2 is to run `gpd laptop` wherever you do your coding:
 
 ```bash
+# clone OpenStack project (e.g. horizon)
 git clone https://github.com/openstack/horizon.git ~/horizon
+# setup laptop to send pushes
 gpd laptop --project horizon --git-work-dir ~/horizon --host horizontest.example.com
 cd ~/horizon
 # make some changes
 git commit -a
+# push your changes
 git push gpd-horizontest
 ```
 
@@ -45,7 +48,7 @@ git push gpd-horizontest
 
 While there is a commit necessary per push, you get built-in push history by
 doing so (use interactive rebase to squash commits before submitting to
-Gerrit). And if you hate commit proliferation, use `--amend` every time.
+Gerrit). And if you dislike commit proliferation, use `--amend` every time.
 
 ## Requirements
 
