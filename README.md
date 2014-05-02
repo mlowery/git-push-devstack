@@ -88,7 +88,7 @@ There are `post-receive` hooks for the following projects:
 * python-troveclient
 
 Adding more post-receive hooks is as simple as adding a file to the
-`post-receive` directory.
+`post-receive` directory. Use `horizon.bash` as a starter template.
 
 ## Best Practices
 

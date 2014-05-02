@@ -5,8 +5,6 @@ copy_horizon_local_settings() {
 }
 
 main() {
-    local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $dir/vm.bash
     post_receive_begin
     post_receive $dest_repo_dir
     # TODO source lib/horizon then init_horizon then restart_apache_server
@@ -15,29 +13,20 @@ main() {
     post_receive_end
 }
 
-check_vars() {
-    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $my_dir/../lib/vm.bash
-    local vars=$1
-    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars"
-}
-
-show_vars() {
-    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $my_dir/../lib/vm.bash
-    var_desc=""
-    post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"
-}
-
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_file="${BASH_SOURCE[0]}"
+source $my_dir/vm.bash
 case $1 in
     --check-vars)
-    check_vars "$2"
+    post_receive_check_vars $my_file "$2"
     shift
     ;;
     --show-vars)
-    show_vars
+    post_receive_show_vars $my_file ""
     ;;
     *)
     main
     ;;
 esac
+
+exit 0

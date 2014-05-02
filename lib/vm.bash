@@ -85,7 +85,7 @@ post_receive_check_vars() {
                 local formatted=$(post_receive_format_script_name $file)
                 echo ""
                 echo "${formatted^^} HOOK SETUP ERRORS"
-                echo "(Use gpd vm-hook-info to see variables for hook \"$formatted\")"
+                echo "(Use \"gpd vm-hook-info --project $formatted\" to see variables for this hook)"
             fi
             errors=$((errors+1))
             local num=$(printf %02d $errors)

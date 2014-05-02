@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
 
 main() {
-    local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $dir/vm.bash
     post_receive_begin
     post_receive $dest_repo_dir
     post_receive_end
 }
 
-main
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_file="${BASH_SOURCE[0]}"
+source $my_dir/vm.bash
+case $1 in
+    --check-vars)
+    post_receive_check_vars $my_file "$2"
+    shift
+    ;;
+    --show-vars)
+    post_receive_show_vars $my_file ""
+    ;;
+    *)
+    main
+    ;;
+esac
+
+exit 0

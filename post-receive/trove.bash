@@ -81,9 +81,6 @@ fix_guestagent_conf() {
 
 
 main() {
-    local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $dir/vm.bash
-
     post_receive_begin
     post_receive $dest_repo_dir
 
@@ -96,27 +93,16 @@ main() {
     post_receive_end
 }
 
-check_vars() {
-    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $my_dir/../lib/vm.bash
-    local vars=$1
-    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars" guest_ip
-}
-
-show_vars() {
-    local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    source $my_dir/../lib/vm.bash
-    var_desc="guest_ip: IP of trove instance to which to push code updates"
-    post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"
-}
-
+my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+my_file="${BASH_SOURCE[0]}"
+source $my_dir/vm.bash
 case $1 in
     --check-vars)
-    check_vars "$2"
+    post_receive_check_vars $my_file "$2" guest_ip
     exit $?
     ;;
     --show-vars)
-    show_vars
+    post_receive_show_vars $my_file "guest_ip: IP of trove instance to which to push code updates"
     ;;
     *)
     main
