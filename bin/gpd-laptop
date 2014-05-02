@@ -21,6 +21,7 @@ USAGE
                [--bare-repo-root-dir <bare-repo-root-dir]
                [--remote-name <remote-name>]
                [--project <project>]
+               [--verbose]
                [--help]
 
 DEFAULTS
@@ -37,6 +38,7 @@ ENVIRONMENT VARIABLES
                                  prefix to remote name derived from --vm
     GPD_AUTO_REMOTE_NAME_SUFFIX: When --remote_name not specified, add this
                                  suffix to remote name derived from --vm
+    GPD_VERBOSE: 1 to show extra output
 "
 
 usage() {
