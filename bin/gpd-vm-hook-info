@@ -40,6 +40,7 @@ case $key in
 esac
 done
 
+source "$my_dir/../lib/vm.bash"
 [[ -z $project ]] && usage "ERROR: --project is required"
 
 log_info "project=$project"
