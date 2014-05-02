@@ -86,7 +86,7 @@ necessary for your changes to fully take effect (e.g. `service apache2 restart`)
 Pushes to the bare repository
 are forced (i.e. non-fast-forward updates are allowed)
 which allows you to jump between unrelated commits. Finally, just to be safe, all
-changes in the `/opt/stack/<project> directory` are stashed or tagged to
+changes in the `/opt/stack/<project>` directory are stashed or tagged to
 prevent any local changes you may have made while hacking (but you should avoid
 that kind of hacking).
 
