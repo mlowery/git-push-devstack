@@ -83,11 +83,13 @@ post_receive_check_vars() {
         if ! is_set $var; then
             if [[ $errors == 0 ]]; then
                 local formatted=$(post_receive_format_script_name $file)
+                echo ""
                 echo "${formatted^^} HOOK SETUP ERRORS"
                 echo "(Use gpd vm-hook-info to see variables for this hook)"
             fi
             errors=$((errors+1))
-            echo "ERROR: $var is missing or invalid"
+            local num=$(printf %02d $errors)
+            echo "${num}. ERROR: $var is missing or invalid"
         fi
     done
     return $errors
