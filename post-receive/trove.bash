@@ -40,24 +40,16 @@ restart_tr_cond() {
 }
 
 do_in_guest() {
-    local cmd=$1
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $GUEST_USERNAME@$GUEST_IP "$cmd"
-}
-
-start_tr_guest() {
-    do_in_guest "sudo service trove-guest start"
-}
-
-stop_tr_guest() {
-    do_in_guest "sudo service trove-guest stop"
-}
-
-restart_tr_guest() {
-    do_in_guest "sudo service trove-guest restart"
+    local guest_ip=$1
+    local cmd=$2
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(whoami)@$guest_ip "$cmd"
 }
 
 update_guest_code() {
-    do_in_guest "sudo -u $GUEST_USERNAME rsync -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' -avz --exclude='.*' ${GUEST_USERNAME}@10.0.0.1:$dest_repo_dir/ /home/$GUEST_USERNAME/trove && sudo service trove-guest restart"
+    local guest_ip=$1
+    echo "Pulling code onto guest ($guest_ip)..."
+    local guest_username=$(whoami)
+    do_in_guest $guest_ip "sudo -u $guest_username rsync -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' -avz --exclude='.*' ${guest_username}@10.0.0.1:$dest_repo_dir/ /home/$guest_username/trove && sudo service trove-guest restart"
 }
 
 fix_guestagent_conf() {
@@ -95,15 +87,12 @@ main() {
     post_receive_begin
     post_receive $dest_repo_dir
 
-    GUEST_IP=${GUEST_IP:-10.0.0.2}
-    GUEST_USERNAME=${GUEST_USERNAME:-`whoami`}
-
     fix_guestagent_conf
     restart_tr_api
     restart_tr_tmgr
     restart_tr_cond
-    echo "Pulling code onto guest ($GUEST_IP)..."
-    update_guest_code
+    update_guest_code $guest_ip
+
     post_receive_end
 }
 
@@ -111,14 +100,13 @@ check_vars() {
     local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     source $my_dir/../lib/vm.bash
     local vars=$1
-    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars" devstack_home_dir
+    post_receive_check_vars "${BASH_SOURCE[0]}" "$vars" guest_ip
 }
 
 show_vars() {
     local my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     source $my_dir/../lib/vm.bash
-    var_desc="guest_ip: IP of trove instance to which to push code updates
-    devstack_home_dir: DevStack dir (used to call DevStack functions)"
+    var_desc="guest_ip: IP of trove instance to which to push code updates"
     post_receive_show_vars "${BASH_SOURCE[0]}" "$var_desc"
 }
 

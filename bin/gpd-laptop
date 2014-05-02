@@ -111,6 +111,4 @@ fi
 
 setup_remote $project $git_work_dir $vm $remote_user "$bare_repo_root_dir" "$remote_name"
 
-if [[ $verbose == 1 ]]; then
-    log_info "Created git remote \"$remote_name\""
-fi
+log_info "Created git remote \"$remote_name\""

@@ -135,10 +135,9 @@ setup_git_repo() {
     fi
 
     # check this hook's vars
-    #if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
-    #    return 1
-    #fi
-    # TODO re-enable
+    if ! "$post_receive_path" --check-vars "$post_receive_vars"; then
+        return 1
+    fi
 
     local bare_repo_dir=$bare_repo_root_dir/$short_name.git
 
