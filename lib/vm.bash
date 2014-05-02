@@ -164,6 +164,6 @@ setup_git_repo() {
     # update vars every time
     add_or_replace_in_file "^dest_repo_dir=.*" "dest_repo_dir=$dest_repo_dir" $bare_repo_dir/hooks/gpdrc
     add_or_replace_in_file "^devstack_home_dir=.*" "devstack_home_dir=$devstack_home_dir"  $bare_repo_dir/hooks/gpdrc
-    #echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
+    echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
 
 }
