@@ -141,5 +141,5 @@ if [[ $verbose == 1 ]]; then
 fi
 
 if ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
-    quiet_die "ERROR: Script failed. --post-receive-vars may be required."
+    quiet_die "ERROR: Hook setup failed. --post-receive-vars may be required."
 fi

@@ -43,6 +43,8 @@ done
 source "$my_dir/../lib/vm.bash"
 [[ -z $project ]] && usage "ERROR: --project is required"
 
-log_info "project=$project"
+if [[ $verbose == 1 ]]; then
+    log_info "project=$project"
+fi
 
 "$my_dir/../post-receive/$project.bash" --show-vars
