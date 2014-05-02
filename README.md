@@ -6,9 +6,12 @@ git-push-devstack (gpd) is a development workflow for OpenStack projects.
 gpd was built for OpenStack developers who want to code locally and automate
 the copy-to-DevStack-VM-and-restart-services sequence.
 
+Where [Vagrant](http://www.vagrantup.com/) might be used for sharing files with
+local DevStack VMs, gpd automates the sharing of files with remote DevStack VMs.
+
 With gpd, `git
 push` serves as a mechanism for copying changes from your laptop (or wherever
-you code) to your DevStack VM. `git push` also serves as a mechanism to trigger
+you code) to your [DevStack](http://devstack.org/) VM. `git push` also serves as a mechanism to trigger
 any restarts or other actions upon uploading new code.
 
 ## Requirements
@@ -100,15 +103,7 @@ Adding more `post-receive` hooks is as simple as adding a file to the
 
 ## Best Practices
 
-* Automate `gpd setup-hook` using Puppet, Fabric, User Data, or ssh.
+* Automate `gpd setup-hook` using [Puppet](http://puppetlabs.com/), [Fabric](http://www.fabfile.org/), [User Data](http://docs.openstack.org/user-guide/content/user-data.html), or ssh.
 * Take advantage of `GPD_*` environment variables to eliminate repeating
 rarely-changing values. Example: If your DevStack VM user is always `ubuntu`,
 set `GPD_REMOTE_USER` to `ubuntu`.
-
-# References
-
-* [Vagrant](http://www.vagrantup.com/)
-* [DevStack](http://devstack.org/)
-* [Fabric](http://www.fabfile.org/)
-* [Puppet](http://puppetlabs.com/)
-* [User Data](http://docs.openstack.org/user-guide/content/user-data.html)
