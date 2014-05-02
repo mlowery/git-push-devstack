@@ -13,23 +13,23 @@ default_devstack_home_dir=~/devstack
 dashless=$(basename "$0" | sed -e 's/-/ /')
 USAGE="
 NAME
-    gpd vm - setup bare repo and hook on DevStack VM
+    gpd setup-hook - setup bare repo and hook on DevStack VM
 
 USAGE
     $dashless --start-repo <start-repo>
-           [--dest-repo-dir <dest-repo-dir>]
-           [--devstack-home-dir <devstack-home-dir>]
-           [--localrc-repo-dir <localrc-repo-var>]
-           [--start-branch <start-branch>]
-           [--bare-repo-root-dir <bare-repo-root-dir>]
-           [--hook-vars <hook-vars>]
-           [--verbose]
-           [--help]
+                   [--dest-repo-dir <dest-repo-dir>]
+                   [--devstack-home-dir <devstack-home-dir>]
+                   [--localrc-repo-dir <localrc-repo-var>]
+                   [--start-branch <start-branch>]
+                   [--bare-repo-root-dir <bare-repo-root-dir>]
+                   [--hook-vars <hook-vars>]
+                   [--verbose]
+                   [--help]
 
 DESCRIPTION
     Sets up bare repo in \$bare-repo-root-dir and installs post-receive hook to
 copy files on git push to \$dest-repo-dir. Affected processes are restarted
-during the hook.
+during the hook run.
 
     The current user must have write access to the entire \$bare-repo-root-dir
 tree.
@@ -38,14 +38,14 @@ tree.
 the user running this script.
 
     Some post-receive hooks require additional variables. Run:
-        gpd vm-hook-info <project>.
+        gpd describe-hook --project <project>.
 
 DEFAULTS
-    --start-branch $default_start_branch
-    --bare-repo-root-dir \$GPD_BARE_REPO_ROOT_DIR or $default_bare_repo_root_dir
-    --devstack-home-dir \$GPD_DEVSTACK_HOME_DIR
-    --localrc-repo-dir <project>_REPO where project derived from --start-repo
-    --dest-repo-dir /opt/stack/<project> where project derived from --start-repo
+    --start-branch: $default_start_branch
+    --bare-repo-root-dir: \$GPD_BARE_REPO_ROOT_DIR or $default_bare_repo_root_dir
+    --devstack-home-dir: \$GPD_DEVSTACK_HOME_DIR or $default_devstack_home_dir
+    --localrc-repo-dir: <project>_REPO where project derived from --start-repo
+    --dest-repo-dir: /opt/stack/<project> where project derived from --start-repo
 
 ENVIRONMENT VARIABLES
     GPD_BARE_REPO_ROOT_DIR: Absolute path to dir in which to create all bare
@@ -99,7 +99,7 @@ case $key in
     --skip-localrc)
     skip_localrc=1
     ;;
-    -v|--verbose)
+    --verbose)
     verbose=1
     ;;
     --help)

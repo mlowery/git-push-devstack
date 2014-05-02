@@ -67,7 +67,7 @@ post_receive_show_vars() {
     local lines="$2"
     local formatted=$(post_receive_format_script_name $file)
     echo "${formatted^^} HOOK VARIABLES"
-    echo "(Pass \"--hook-vars a=b\" to \"gpd vm\" to set hook variable named \"a\" to value \"b\")"
+    echo "(Pass \"--hook-vars a=b\" to \"gpd setup-hook\" to set hook variable named \"a\" to value \"b\")"
     while read -r line; do
         printf "    $line\n"
     done <<< "$lines"
@@ -86,7 +86,7 @@ post_receive_check_vars() {
             if [[ $errors == 0 ]]; then
                 local formatted=$(post_receive_format_script_name $file)
                 echo "${formatted^^} HOOK SETUP ERRORS"
-                echo "(Use \"gpd vm-hook-info --project $formatted\" to see variables for this hook)"
+                echo "(Use \"gpd describe-hook --project $formatted\" to see variables for this hook)"
             fi
             errors=$((errors+1))
             local num=$(printf %02d $errors)

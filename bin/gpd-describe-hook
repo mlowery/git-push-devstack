@@ -6,11 +6,11 @@ my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 dashless=$(basename "$0" | sed -e 's/-/ /')
 USAGE="
 NAME
-    gpd vm-hook-info - print info about hook including extra vars
+    gpd describe-hook - print info about hook including extra vars
 
 USAGE
-    $dashless --project <project>
-               [--help]
+    $dashless -p|--project <project>
+                      [-h|--help]
 "
 
 usage() {
@@ -47,4 +47,14 @@ if [[ $verbose == 1 ]]; then
     log_info "project=$project"
 fi
 
-"$my_dir/../post-receive/$project.bash" --show-vars
+hook="$my_dir/../post-receive/$project.bash"
+
+if [[ ! -x $hook ]]; then
+    echo "ERROR: <project> must be one of:"
+    for file in $(ls "$my_dir/../post-receive"); do
+        echo "* $(post_receive_format_script_name $file)"
+    done
+    quiet_die
+fi
+
+$hook --show-vars
