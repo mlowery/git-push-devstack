@@ -8,7 +8,7 @@ main() {
 
 my_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 my_file="${BASH_SOURCE[0]}"
-source $my_dir/vm.bash
+source $my_dir/../lib/vm.bash
 case $1 in
     --check-vars)
     post_receive_check_vars $my_file "$2"
