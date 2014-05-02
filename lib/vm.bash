@@ -67,7 +67,7 @@ post_receive_show_vars() {
     local lines="$2"
     local formatted=$(post_receive_format_script_name $file)
     echo "${formatted^^} HOOK VARIABLES"
-    echo "(Use \"--hook-vars a=b\" with \"gpd vm\" to set hook variable named \"a\" to value \"b\")"
+    echo "(Pass \"--hook-vars a=b\" to \"gpd vm\" to set hook variable named \"a\" to value \"b\")"
     while read -r line; do
         printf "    $line\n"
     done <<< "$lines"

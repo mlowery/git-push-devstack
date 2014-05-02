@@ -22,7 +22,7 @@ USAGE
            [--localrc-repo-dir <localrc-repo-var>]
            [--start-branch <start-branch>]
            [--bare-repo-root-dir <bare-repo-root-dir>]
-           [--post-receive-vars <post-receive-vars>]
+           [--hook-vars <hook-vars>]
            [--verbose]
            [--help]
 
@@ -92,7 +92,7 @@ case $key in
     localrc_repo_var=$1
     shift
     ;;
-    --post-receive-vars)
+    --hook-vars)
     post_receive_vars=$1
     shift
     ;;
@@ -141,5 +141,5 @@ if [[ $verbose == 1 ]]; then
 fi
 
 if ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
-    quiet_die "ERROR: Hook setup failed. --post-receive-vars may be required."
+    quiet_die "ERROR: Hook setup failed."
 fi
