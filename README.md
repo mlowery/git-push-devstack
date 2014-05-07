@@ -32,13 +32,13 @@ Run `gpd setup-hook` on your DevStack VM before running `stack.sh`:
 
 ```bash
 # clone DevStack
-git clone https://github.com/openstack-dev/devstack.git ~/devstack
+$ git clone https://github.com/openstack-dev/devstack.git ~/devstack
 # clone gpd
-git clone https://github.com/mlowery/git-push-devstack.git
+$ git clone https://github.com/mlowery/git-push-devstack.git
 # setup vm to receive pushes
-cd git-push-devstack/bin && ./gpd setup-hook --start-repo https://github.com/openstack/horizon.git
+$ cd git-push-devstack/bin && ./gpd setup-hook --start-repo https://github.com/openstack/horizon.git
 # run DevStack's stack.sh
-cd ~/devstack && ./stack.sh
+$ cd ~/devstack && ./stack.sh
 ```
 
 ### Step 2
@@ -47,15 +47,18 @@ Run `gpd setup-remote` on your laptop:
 
 ```bash
 # clone OpenStack project (e.g. horizon) if not already cloned
-git clone https://github.com/openstack/horizon.git ~/horizon
+$ git clone https://github.com/openstack/horizon.git ~/horizon
 # setup laptop to send pushes
-gpd setup-remote --project horizon --git-work-dir ~/horizon --vm horizontest.example.com
-cd ~/horizon
-# make some changes
-git commit -a
-# push your changes
-git push gpd-horizontest
+$ gpd setup-remote --git-work-dir ~/horizon --server horizontest.example.com
+$ cd ~/horizon
+# make some changes here (not shown)
+# commit
+$ git commit -a
+# push your changes to the DevStack VM
+$ git push gpd-horizontest
 ```
+
+Check out Advanced Setup below for more control.
 
 ## Using
 
@@ -87,8 +90,8 @@ Pushes to the bare repository
 are forced (i.e. non-fast-forward updates are allowed)
 which allows you to jump between unrelated commits. Finally, just to be safe, all
 changes in the `/opt/stack/<project>` directory are stashed or tagged to
-prevent any local changes you may have made while hacking (but you should avoid
-that kind of hacking).
+prevent any local changes you may have made while hacking (which you should avoid
+if possible).
 
 ## What OpenStack Projects Are Supported
 
@@ -107,3 +110,90 @@ Adding more `post-receive` hooks is as simple as adding a file to the
 * Take advantage of `GPD_*` environment variables to eliminate repeating
 rarely-changing values. Example: If your DevStack VM user is always `ubuntu`,
 set `GPD_REMOTE_USER` to `ubuntu`.
+
+## Advanced Setup
+
+This section describes some of the options that can give you more control over
+gpd's behavior or eliminate the need to repeatedly enter rarely-changing options.
+
+### gpd setup-repo
+
+```bash
+$ gpd setup-hook --help
+
+NAME
+    gpd setup-hook - setup bare repo and hook on DevStack VM
+
+USAGE
+    gpd setup-hook --start-repo <start-repo>
+                   [--dest-repo-dir <dest-repo-dir>]
+                   [--devstack-home-dir <devstack-home-dir>]
+                   [--localrc-repo-dir <localrc-repo-var>]
+                   [--start-branch <start-branch>]
+                   [--bare-repo-root-dir <bare-repo-root-dir>]
+                   [--hook-vars <hook-vars>]
+                   [--verbose]
+                   [--help]
+
+DESCRIPTION
+    Sets up bare repo in $bare-repo-root-dir and installs post-receive hook to
+copy files on git push to $dest-repo-dir. Affected processes are restarted
+during the hook run.
+
+    The current user must have write access to the entire $bare-repo-root-dir
+tree.
+
+    In order to push to the bare repo, you must setup key-based SSH login for
+the user running this script.
+
+    Some post-receive hooks require additional variables. Run:
+        gpd describe-hook --project <project>.
+
+DEFAULTS
+    --start-branch: master
+    --bare-repo-root-dir: $GPD_BARE_REPO_ROOT_DIR or /Users/mlowery/gpdrepos
+    --devstack-home-dir: $GPD_DEVSTACK_HOME_DIR or /Users/mlowery/devstack
+    --localrc-repo-dir: <project>_REPO where project derived from --start-repo
+    --dest-repo-dir: /opt/stack/<project> where project derived from --start-repo
+
+ENVIRONMENT VARIABLES
+    GPD_BARE_REPO_ROOT_DIR: Absolute path to dir in which to create all bare
+                            repos on DevStack VM
+    GPD_DEVSTACK_HOME_DIR: Absolute path to DevStack clone
+    GPD_VERBOSE: 1 to show extra output
+```
+
+### gpd setup-remote
+
+```bash
+$ gpd setup-remote --help
+
+NAME
+    gpd setup-remote - setup git remote on local clone
+
+USAGE
+    gpd setup-remote -w|--git-work-dir <git-work-dir>
+                     -s|--server <server>
+                     [-u|--remote-user <remote-user>]
+                     [-b|--bare-repo-root-dir <bare-repo-root-dir]
+                     [-r|--remote-name <remote-name>]
+                     [-p|--project <project>]
+                     [-v|--verbose]
+                     [-h|--help]
+
+DEFAULTS
+    --remote-user: mlowery
+    --bare-repo-root-dir: /home/mlowery/gpdrepos
+    --remote-name: derived from --server
+    --project: derived from "origin" remote found at --git-work-dir
+
+ENVIRONMENT VARIABLES
+    GPD_REMOTE_USER: User on DevStack VM to use with git (via ssh)
+    GPD_BARE_REPO_ROOT_DIR: Absolute path to dir containing all bare repos on
+                            DevStack VM
+    GPD_AUTO_REMOTE_NAME_PREFIX: When --remote_name not specified, add this
+                                 prefix to remote name derived from --server
+    GPD_AUTO_REMOTE_NAME_SUFFIX: When --remote_name not specified, add this
+                                 suffix to remote name derived from --server
+    GPD_VERBOSE: 1 to show extra output
+```
