@@ -42,8 +42,8 @@ the user running this script.
 
 DEFAULTS
     --start-branch: $default_start_branch
-    --bare-repo-root-dir: \$GPD_BARE_REPO_ROOT_DIR or $default_bare_repo_root_dir
-    --devstack-home-dir: \$GPD_DEVSTACK_HOME_DIR or $default_devstack_home_dir
+    --bare-repo-root-dir: \$GPD_BARE_REPO_ROOT_DIR or \$HOME/gpdrepos
+    --devstack-home-dir: \$GPD_DEVSTACK_HOME_DIR or \$HOME/devstack
     --localrc-repo-dir: <project>_REPO where project derived from --start-repo
     --dest-repo-dir: /opt/stack/<project> where project derived from --start-repo
 

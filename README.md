@@ -151,8 +151,8 @@ the user running this script.
 
 DEFAULTS
     --start-branch: master
-    --bare-repo-root-dir: $GPD_BARE_REPO_ROOT_DIR or /Users/mlowery/gpdrepos
-    --devstack-home-dir: $GPD_DEVSTACK_HOME_DIR or /Users/mlowery/devstack
+    --bare-repo-root-dir: $GPD_BARE_REPO_ROOT_DIR or $HOME/gpdrepos
+    --devstack-home-dir: $GPD_DEVSTACK_HOME_DIR or $HOME/devstack
     --localrc-repo-dir: <project>_REPO where project derived from --start-repo
     --dest-repo-dir: /opt/stack/<project> where project derived from --start-repo
 
@@ -182,8 +182,8 @@ USAGE
                      [-h|--help]
 
 DEFAULTS
-    --remote-user: mlowery
-    --bare-repo-root-dir: /home/mlowery/gpdrepos
+    --remote-user: $(whoami)
+    --bare-repo-root-dir: $HOME/gpdrepos
     --remote-name: derived from --server
     --project: derived from "origin" remote found at --git-work-dir
 

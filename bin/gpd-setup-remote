@@ -25,8 +25,8 @@ USAGE
                      [-h|--help]
 
 DEFAULTS
-    --remote-user: $default_remote_user
-    --bare-repo-root-dir: $default_bare_repo_root_dir
+    --remote-user: \$(whoami)
+    --bare-repo-root-dir: \$HOME/gpdrepos
     --remote-name: derived from --server
     --project: derived from \"origin\" remote found at --git-work-dir
 
