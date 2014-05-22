@@ -20,6 +20,7 @@ if [[ -f $my_dir/vm.bash ]]; then
 else
     source $my_dir/../lib/vm.bash
 fi
+
 case $1 in
     --check-vars)
     post_receive_check_vars $my_file "$2"
