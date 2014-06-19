@@ -42,7 +42,7 @@ restart_tr_cond() {
 do_in_guest() {
     local guest_ip=$1
     local cmd=$2
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(whoami)@$guest_ip "$cmd"
+    ssh -o ConnectTimeout=3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $(whoami)@$guest_ip "$cmd"
 }
 
 update_guest_code() {
