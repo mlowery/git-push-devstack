@@ -52,39 +52,10 @@ update_guest_code() {
     do_in_guest $guest_ip "sudo -u $guest_username rsync -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' -avz --exclude='.*' ${guest_username}@10.0.0.1:$dest_repo_dir/ /home/$guest_username/trove && sudo service trove-guest restart"
 }
 
-fix_guestagent_conf() {
-    # trove-guestagent.conf is an odd-ball; it doesn't live in /etc/trove like
-    # the other conf files since it is rsync'ed to the guest (and the rsync
-    # only pulls /opt/stack/trove); furthermore, it's edited by DevStack (see
-    # lib/trove) with NETWORK_GATEWAY, RABBIT_PASSWORD, and log settings; so
-    # during a post-receive on trove, this needs to be run since the user's copy
-    # will overwrite any edits by DevStack
-
-    # execute in subshell
-    (
-    # copied from redstack.rc
-    RABBIT_PASSWORD=f7999d1955c5014aa32c
-    # copied from stack.sh
-    ENABLE_DEBUG_LOG_LEVEL=True
-    SYSLOG=False
-    LOG_COLOR=True
-
-    source $devstack_home_dir/functions
-    source $devstack_home_dir/stackrc
-    source $devstack_home_dir/lib/trove
-
-    iniset $TROVE_LOCAL_CONF_DIR/trove-guestagent.conf.sample DEFAULT rabbit_password $RABBIT_PASSWORD
-    sed -i "s/localhost/$NETWORK_GATEWAY/g" $TROVE_LOCAL_CONF_DIR/trove-guestagent.conf.sample
-    setup_trove_logging $TROVE_LOCAL_CONF_DIR/trove-guestagent.conf.sample
-    )
-}
-
-
 main() {
     post_receive_begin
     post_receive $dest_repo_dir
 
-    fix_guestagent_conf
     restart_tr_api
     restart_tr_tmgr
     restart_tr_cond
