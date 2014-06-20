@@ -59,6 +59,11 @@ post_receive_begin() {
 }
 
 post_receive_end() {
+    local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    if [[ -f $dir/gpd_extra ]]; then
+        source $dir/gpd_extra
+        gpd_extra
+    fi
     trap - EXIT
 }
 
