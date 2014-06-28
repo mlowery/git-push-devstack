@@ -47,7 +47,7 @@ do_in_guest() {
 
 update_guest_code() {
     local guest_ip=$1
-    echo "Pulling code onto guest ($guest_ip)..."
+    log_info "Pulling code onto guest ($guest_ip)..."
     local guest_username=$(whoami)
     do_in_guest $guest_ip "sudo -u $guest_username rsync -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' -avz --exclude='.*' ${guest_username}@10.0.0.1:$dest_repo_dir/ /home/$guest_username/trove && sudo service trove-guest restart"
 }
@@ -56,10 +56,11 @@ main() {
     post_receive_begin
     post_receive $dest_repo_dir
 
+    log_info "Restarting services"
     restart_tr_api
     restart_tr_tmgr
     restart_tr_cond
-    update_guest_code $guest_ip
+    update_guest_code $guest_ip || warn "Could not update guest $guest_ip"
 
     post_receive_end
 }

@@ -62,6 +62,7 @@ post_receive_end() {
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     if [[ -f $dir/gpd_extra ]]; then
         source $dir/gpd_extra
+        log_info "Running gpd_extra"
         gpd_extra
     fi
     trap - EXIT

@@ -72,6 +72,11 @@ err() {
     return $exitcode
 }
 
+warn() {
+    local msg="[WARNING] $1"
+    echo -e "********************\n${msg}\n********************" 1>&2;
+}
+
 # Test if the named environment variable is set and not zero length
 # is_set env-var
 is_set() {
