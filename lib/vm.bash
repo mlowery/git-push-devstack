@@ -26,8 +26,8 @@ backup_stash() {
     local repo_path=$1
     # quiet exits with 1 if there were differences and 0 means no differences
     if ! git_cmd $repo_path diff --quiet; then
-        echo "Stashing changes..."
-        git_cmd $repo_path stash save -u "gpd-$(safe_date)"
+        log_info "Stashing changes..."
+        git_cmd $repo_path stash save -u "gpd-$(safe_date)" &> /dev/null
     fi
 }
 
@@ -35,14 +35,15 @@ backup_tag() {
     local repo_path=$1
     # describe exits with 0 if a tag points to same commit as HEAD
     #git_cmd $repo_path describe --exact-match --tags HEAD &> /dev/null
-    git_cmd $repo_path tag "gpd-$(safe_date)"
+    log_info "Tagging current commit..."
+    git_cmd $repo_path tag "gpd-$(safe_date)" &> /dev/null
 }
 
 post_receive() {
     local repo_path=$1
     backup_stash $repo_path
     backup_tag $repo_path
-    echo "Updating $repo_path..."
+    log_info "Updating $repo_path..."
     git_cmd $repo_path fetch
     git_cmd $repo_path reset --hard origin/master
 }

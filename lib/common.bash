@@ -63,7 +63,7 @@ err() {
     local exitcode=$?
     errXTRACE=$(set +o | grep xtrace)
     set +o xtrace
-    local msg="[ERROR] ${BASH_SOURCE[2]}:$1 $2"
+    local msg="ERROR: ${BASH_SOURCE[2]}:$1 $2"
     echo -e "********************\n${msg}\n********************" 1>&2;
     if [[ -n ${SCREEN_LOGDIR} ]]; then
         echo $msg >> "${SCREEN_LOGDIR}/error.log"
@@ -73,7 +73,7 @@ err() {
 }
 
 warn() {
-    local msg="[WARNING] $1"
+    local msg="WARNING: $1"
     echo -e "********************\n${msg}\n********************" 1>&2;
 }
 
