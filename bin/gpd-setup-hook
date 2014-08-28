@@ -118,7 +118,7 @@ source "$my_dir/../lib/vm.bash"
 #[[ -n $localrc_repo_var && -z $devstack_home_dir ]] && usage "ERROR: --devstack-home-dir is required when --localrc_repo_var present"
 
 bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-$default_bare_repo_root_dir}}
-start_branch=${start_branch:-${default_start_branch}}
+start_branch="${start_branch:-${default_start_branch}}"
 devstack_home_dir=${devstack_home_dir:-${default_devstack_home_dir}}
 skip_localrc=${skip_localrc:-0}
 localrc_repo_var=${localrc_repo_var:-$(localrc_var_from_repo_url $start_repo)}
@@ -140,6 +140,6 @@ if [[ $verbose == 1 ]]; then
     log_info "post_receive_vars=$post_receive_vars"
 fi
 
-if ! setup_git_repo $start_repo $start_branch $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
+if ! setup_git_repo $start_repo "$start_branch" $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
     quiet_die "ERROR: Hook setup failed."
 fi
