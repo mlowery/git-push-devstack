@@ -124,7 +124,7 @@ localrc_var_from_repo_url() {
 
 setup_git_repo() {
     local git_repo_url=$1
-    local branch=$2
+    local branch="$2"
     local bare_repo_root_dir=$3
     local dest_repo_dir=$4
     local devstack_home_dir=${5:-""}
