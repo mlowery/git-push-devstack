@@ -27,7 +27,7 @@ backup_stash() {
     # quiet exits with 1 if there were differences and 0 means no differences
     if ! git_cmd $repo_path diff --quiet; then
         log_info "Stashing changes..."
-        git_cmd $repo_path stash save -u "gpd-$(safe_date)" &> /dev/null
+        git_cmd $repo_path stash save -a "gpd-$(safe_date)" &> /dev/null
     fi
 }
 
@@ -37,6 +37,11 @@ backup_tag() {
     #git_cmd $repo_path describe --exact-match --tags HEAD &> /dev/null
     log_info "Tagging current commit..."
     git_cmd $repo_path tag "gpd-$(safe_date)" &> /dev/null
+
+    #if ! git merge-base --is-ancestor HEAD $candidate_branch; then
+    #    log_info "Tagging current commit..."
+    #    git_cmd $repo_path tag "gpd-$(safe_date)" &> /dev/null
+    #fi
 }
 
 post_receive() {
@@ -160,7 +165,15 @@ setup_git_repo() {
         ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
         ln -s $dir/../post-receive/$short_name.bash $bare_repo_dir/hooks/post-receive
         git clone $bare_repo_dir $dest_repo_dir
-        git_cmd $dest_repo_dir checkout $branch
+
+        # if branch var contains a space, it is considered a command so just run it;
+        # have to cd into dest_repo_dir since there may be multiple git commands
+        # wrap in parens so as not to change working dir
+        if [[ "$branch" =~ .*[[:space:]].* ]]; then
+            (cd $dest_repo_dir && eval "$branch")
+        else
+            git_cmd $dest_repo_dir checkout $branch
+        fi
 
         if [[ "$localrc_repo_var" ]]; then
             add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" ~/devstack/localrc
