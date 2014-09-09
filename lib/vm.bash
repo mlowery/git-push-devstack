@@ -130,6 +130,7 @@ setup_git_repo() {
     local devstack_home_dir=${5:-""}
     local localrc_repo_var=${6:-""}
     local post_receive_vars=${7:-""}
+    local project_name=${8:-"$(project_from_repo_url $git_repo_url)"}
 
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -143,9 +144,7 @@ setup_git_repo() {
         sudo chown $(whoami) "$dest_repo_dir_parent"
     fi
 
-    local short_name=$(project_from_repo_url $git_repo_url)
-
-    local post_receive_path="$dir/../post-receive/$short_name.bash"
+    local post_receive_path="$dir/../post-receive/$project_name.bash"
     if [[ ! -x "$post_receive_path" ]]; then
         die $LINENO "$post_receive_path is missing or not executable"
     fi
@@ -155,7 +154,7 @@ setup_git_repo() {
         return 1
     fi
 
-    local bare_repo_dir=$bare_repo_root_dir/$short_name.git
+    local bare_repo_dir=$bare_repo_root_dir/$project_name.git
 
     if [[ ! -d $bare_repo_dir ]]; then
 
@@ -163,7 +162,7 @@ setup_git_repo() {
 
         ln -s $dir/../lib/common.bash $bare_repo_dir/hooks/common.bash
         ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
-        ln -s $dir/../post-receive/$short_name.bash $bare_repo_dir/hooks/post-receive
+        ln -s $dir/../post-receive/$project_name.bash $bare_repo_dir/hooks/post-receive
         git clone $bare_repo_dir $dest_repo_dir
 
         # if branch var contains a space, it is considered a command so just run it;
@@ -176,7 +175,7 @@ setup_git_repo() {
         fi
 
         if [[ "$localrc_repo_var" ]]; then
-            add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" ~/devstack/localrc
+            add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" $devstack_home_dir/localrc
         fi
     else
         echo "WARN: $bare_repo_dir already exists; only writing gpdrc"

@@ -96,6 +96,10 @@ case $key in
     post_receive_vars=$1
     shift
     ;;
+    --project)
+    project=$1
+    shift
+    ;;
     --skip-localrc)
     skip_localrc=1
     ;;
@@ -140,6 +144,6 @@ if [[ $verbose == 1 ]]; then
     log_info "post_receive_vars=$post_receive_vars"
 fi
 
-if ! setup_git_repo $start_repo "$start_branch" $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars; then
+if ! setup_git_repo $start_repo "$start_branch" $bare_repo_root_dir $dest_repo_dir $devstack_home_dir $localrc_repo_var $post_receive_vars $project; then
     quiet_die "ERROR: Hook setup failed."
 fi
