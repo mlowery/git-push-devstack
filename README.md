@@ -132,6 +132,8 @@ USAGE
                    [--start-branch <start-branch>]
                    [--bare-repo-root-dir <bare-repo-root-dir>]
                    [--hook-vars <hook-vars>]
+                   [--project <project-name>]
+                   [--run-hook]
                    [--verbose]
                    [--help]
 

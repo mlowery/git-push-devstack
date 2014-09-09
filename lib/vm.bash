@@ -131,6 +131,7 @@ setup_git_repo() {
     local localrc_repo_var=${6:-""}
     local post_receive_vars=${7:-""}
     local project_name=${8:-"$(project_from_repo_url $git_repo_url)"}
+    local run_hook=${9:-0}
 
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -185,4 +186,7 @@ setup_git_repo() {
     add_or_replace_in_file "^devstack_home_dir=.*" "devstack_home_dir=$devstack_home_dir"  $bare_repo_dir/hooks/gpdrc
     echo "$post_receive_vars" >> $bare_repo_dir/hooks/gpdrc
 
+    if [[ $run_hook -eq 1 ]]; then
+        (cd $bare_repo_dir/hooks && echo 1 2 3 | ./post-receive)
+    fi
 }
