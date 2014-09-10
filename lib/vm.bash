@@ -159,21 +159,28 @@ setup_git_repo() {
 
     if [[ ! -d $bare_repo_dir ]]; then
 
-        git clone --bare $git_repo_url $bare_repo_dir
+        # first create a temp regular clone from start repo and start branch;
+        # then create bare repo from that clone; its master will be the start
+        # branch; any attempts to reset dest_repo_dir to origin/master will
+        # go back to the right place
 
-        ln -s $dir/../lib/common.bash $bare_repo_dir/hooks/common.bash
-        ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
-        ln -s $dir/../post-receive/$project_name.bash $bare_repo_dir/hooks/post-receive
-        git clone $bare_repo_dir $dest_repo_dir
-
+        tmp_clone=$(mktemp -d)
+        git clone $git_repo_url $tmp_clone
         # if branch var contains a space, it is considered a command so just run it;
         # have to cd into dest_repo_dir since there may be multiple git commands
         # wrap in parens so as not to change working dir
         if [[ "$branch" =~ .*[[:space:]].* ]]; then
-            (cd $dest_repo_dir && eval "$branch")
+            (cd $tmp_clone && eval "$branch")
         else
-            git_cmd $dest_repo_dir checkout $branch
+            git_cmd $tmp_clone checkout $branch
         fi
+
+        git clone --bare -l $tmp_clone $bare_repo_dir
+        git clone $bare_repo_dir $dest_repo_dir
+
+        ln -s $dir/../lib/common.bash $bare_repo_dir/hooks/common.bash
+        ln -s $dir/../lib/vm.bash $bare_repo_dir/hooks/vm.bash
+        ln -s $dir/../post-receive/$project_name.bash $bare_repo_dir/hooks/post-receive
 
         if [[ "$localrc_repo_var" ]]; then
             add_or_replace_in_file "^$localrc_repo_var=.*" "$localrc_repo_var=$bare_repo_dir" $devstack_home_dir/localrc
