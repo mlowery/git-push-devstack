@@ -172,7 +172,7 @@ setup_git_repo() {
         if [[ "$branch" =~ .*[[:space:]].* ]]; then
             (cd $dest_repo_dir && eval "$branch")
         else
-            git_cmd $dest_repo_dir checkout -b $branch --track origin/$branch
+            git_cmd $dest_repo_dir checkout origin/$branch
         fi
 
         if [[ "$localrc_repo_var" ]]; then
