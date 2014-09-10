@@ -175,6 +175,9 @@ setup_git_repo() {
             git_cmd $tmp_clone checkout $branch
         fi
 
+        # clone and updates will always fetch master; set master to whatever the current commit is;
+        # in this way, start branch (or whatever commit it created) becomes master
+        git_cmd $tmp_clone update-ref refs/heads/master HEAD
         git clone --bare -l $tmp_clone $bare_repo_dir
         git clone $bare_repo_dir $dest_repo_dir
 
