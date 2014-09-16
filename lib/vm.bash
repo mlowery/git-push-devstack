@@ -115,9 +115,8 @@ post_receive_format_script_name() {
     echo $(basename $script .bash)
 }
 
-localrc_var_from_repo_url() {
-    local git_repo_url=$1
-    local project=$(project_from_repo_url $git_repo_url)
+localrc_var_from_project() {
+    local project=$1
     local localrc_var=${project##python-}
     echo ${localrc_var^^}_REPO
 }
