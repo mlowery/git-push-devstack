@@ -129,7 +129,7 @@ setup_git_repo() {
     local devstack_home_dir=${5:-""}
     local localrc_repo_var=${6:-""}
     local post_receive_vars=${7:-""}
-    local project_name=${8:-"$(project_from_repo_url $git_repo_url)"}
+    local project_name=${8:-""}
     local run_hook=${9:-0}
 
     local dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
