@@ -153,6 +153,4 @@ if [[ $verbose == 1 ]]; then
     log_info "run_hook=$run_hook"
 fi
 
-if ! setup_git_repo "$start_repo" "$start_branch" "$bare_repo_root_dir" "$dest_repo_dir" "$devstack_home_dir" "$localrc_repo_var" "$post_receive_vars" "$project" "$run_hook"; then
-    quiet_die "ERROR: Hook setup failed."
-fi
+setup_git_repo "$start_repo" "$start_branch" "$bare_repo_root_dir" "$dest_repo_dir" "$devstack_home_dir" "$localrc_repo_var" "$post_receive_vars" "$project" "$run_hook"
