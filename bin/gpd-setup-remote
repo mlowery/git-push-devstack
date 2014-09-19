@@ -93,9 +93,9 @@ done
 
 source "$my_dir/../lib/laptop.bash"
 #[[ -z $project ]] && usage "ERROR: --project is required"
-[[ -z $git_work_dir ]] && usage "ERROR: --git-work-dir is required"
 [[ -z $server ]] && usage "ERROR: --server is required"
 
+git_work_dir="${git_work_dir:-$(pwd)}"
 project=${project:-$(project_from_git_work_dir $git_work_dir)}
 remote_user=${user:-${GPD_REMOTE_USER:-$default_remote_user}}
 bare_repo_root_dir=${bare_repo_root_dir:-${GPD_BARE_REPO_ROOT_DIR:-/home/$remote_user/gpdrepos}}

@@ -10,6 +10,10 @@ setup_remote() {
     local bare_repo_root_dir=$5
     local remote_name=$6
 
+    if [[ ! -d "$git_dir/.git" ]]; then
+        function_die $LINENO "ERROR: $git_dir is not a git repository."
+    fi
+
     local vm_repo_path=$(make_bare_repo_path $bare_repo_root_dir $project)
     check_ssh $user@$host $vm_repo_path
 
